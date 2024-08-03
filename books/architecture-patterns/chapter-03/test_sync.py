@@ -2,7 +2,18 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from sync import sync
+from sync import sync, determine_actions, synchronise_dirs
+
+
+class FakeFileSystem(list):
+    def copy(self, src, dest):
+        self.append(('copy', src, dest))
+
+    def move(self, src, dest):
+        self.append(('move', src, dest))
+
+    def delete(self, dest):
+        self.append(('delete', dest))
 
 
 def test_when_a_file_exists_in_the_source_but_not_the_destination():
@@ -48,10 +59,43 @@ def test_when_a_file_has_been_renamed_in_the_source():
 def test_when_a_file_exists_in_the_source_but_not_the_destionation():
     src_hashes = {'hash1': 'fn1'}
     dst_hashes = {}
-    expected_actions = [('COPY', '/src/fn1', '/dst/fn1')]
+
+    actions = determine_actions(src_hashes, dst_hashes, Path('/src'), Path('/dst'))
+
+    expected_actions = [('copy', Path('/src/fn1'), Path('/dst/fn1'))]
+    assert list(actions) == expected_actions
 
 
 def test_when_a_file_has_been_renamed_in_the_source():
     src_hashes = {'hash1': 'fn1'}
     dst_hashes = {'hash1': 'fn2'}
-    expected_actions = [('MOVE', '/dst/fn2', 'dst/fn1')]
+
+    actions = determine_actions(src_hashes, dst_hashes, Path('/src'), Path('/dst'))
+
+    expected_actions = [('move', Path('/dst/fn2'), Path('/dst/fn1'))]
+    assert list(actions) == expected_actions
+
+
+def test_fake_when_a_file_exists_in_the_source_but_not_the_destionation():
+    source = {'sha1': 'my-file'}
+    dest = {}
+    filesystem = FakeFileSystem()
+
+    reader = {'/source': source, '/dest': dest}
+    synchronise_dirs(reader.pop, filesystem, "/source", "/dest")
+
+    expected_actions = [('copy', '/source/my-file', '/dest/my-file')]
+    assert filesystem == expected_actions
+
+
+def test_fake_when_a_file_has_been_renamed_in_the_source():
+    source = {'sha1': 'renamed-file'}
+    dest = {'sha1': 'original-file'}
+    filesystem = FakeFileSystem()
+
+    reader = {"/source": source, "/dest": dest}
+    synchronise_dirs(reader.pop, filesystem, "/source", "/dest")
+
+    determine_actions(source, dest, '/source', '/dest')
+    expected_actions = [('move', '/dest/original-file', '/dest/renamed-file')]
+    assert filesystem == expected_actions
