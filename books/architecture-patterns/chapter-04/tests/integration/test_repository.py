@@ -3,8 +3,8 @@ from typing import List
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from model import Batch, OrderLine
-from repository import SqlAlchemyRepository, AbstractRepository
+from domain.model import Batch, OrderLine
+from adapters.repository import SqlAlchemyRepository, AbstractRepository
 
 
 class FakeRepository(AbstractRepository):
@@ -29,7 +29,7 @@ def test_repository_can_save_a_batch(session: Session):
     repo.add(batch)
     session.commit()
 
-    rows = list(session.execute(text('SELECT reference, sku, _purchased_quantity, eta FROM "batches"')))
+    rows = list(session.execute(text('SELECT reference, sku, purchased_quantity, eta FROM "batches"')))
 
     assert rows == [("batch1", "RUSTY-SOAPDISH", 100, None)]
 
@@ -43,7 +43,7 @@ def insert_order_line(session: Session):
 
 
 def insert_batch(session: Session, batch_id: str):
-    session.execute(text('INSERT INTO batches (reference, sku, _purchased_quantity, eta) '
+    session.execute(text('INSERT INTO batches (reference, sku, purchased_quantity, eta) '
                          'VALUES (:batch_id, "GENERIC-SOFA", 100, null)'), dict(batch_id=batch_id))
     [[batch_id]] = session.execute(text('SELECT id FROM batches WHERE  reference=:batch_id AND sku="GENERIC-SOFA"'),
                                    dict(batch_id=batch_id))
@@ -69,3 +69,4 @@ def test_repository_can_retrive_a_batch_with_allocations(session: Session):
     assert retrieved.sku == expected.sku
     assert retrieved._purchased_quantity == expected._purchased_quantity
     assert retrieved._allocations == {OrderLine("order1", "GENERIC-SOFA", 12)}
+

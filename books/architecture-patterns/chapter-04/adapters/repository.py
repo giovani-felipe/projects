@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import List
 
 from sqlalchemy.orm import Session
 
-from model import Batch
+from domain.model import Batch
 
 
 class AbstractRepository(ABC):

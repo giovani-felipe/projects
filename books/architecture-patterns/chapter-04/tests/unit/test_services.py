@@ -1,9 +1,9 @@
 import pytest
 
-import model
-import services
-from model import Batch
-from repository import AbstractRepository
+from domain import model
+from service_layer import services
+from domain.model import Batch
+from adapters.repository import AbstractRepository
 
 
 class FakeSession():
