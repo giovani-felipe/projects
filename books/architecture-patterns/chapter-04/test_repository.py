@@ -1,8 +1,25 @@
+from typing import List
+
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from model import Batch, OrderLine
-from repository import SqlAlchemyRepository
+from repository import SqlAlchemyRepository, AbstractRepository
+
+
+class FakeRepository(AbstractRepository):
+
+    def __init__(self, batches: List[Batch]):
+        self._batches = set(batches)
+
+    def add(self, batch: Batch):
+        self._batches.add(batch)
+
+    def get(self, reference) -> Batch:
+        return next(b for b in self._batches if b.reference == reference)
+
+    def list(self):
+        return list(self._batches)
 
 
 def test_repository_can_save_a_batch(session: Session):
