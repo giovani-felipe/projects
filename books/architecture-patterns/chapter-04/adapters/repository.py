@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
+from typing import List
 
+import pytest
 from sqlalchemy.orm import Session
 
 from domain.model import Batch
 
 
+@pytest.mark.no_cover
 class AbstractRepository(ABC):
 
     @abstractmethod
@@ -26,8 +29,5 @@ class SqlAlchemyRepository(AbstractRepository):
     def get(self, reference) -> Batch:
         return self.session.query(Batch).filter_by(reference=reference).one()
 
-    def list(self):
+    def list(self) -> List[Batch]:
         return self.session.query(Batch).all()
-
-
-

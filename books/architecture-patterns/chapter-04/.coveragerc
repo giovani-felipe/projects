@@ -1,5 +1,23 @@
 [run]
-omit =  tests/*
-        test_*
-        config.py
-        conftest.py
+omit =
+    tests/*
+    test_*
+    config.py
+    conftest.py
+    __init__.py
+
+[report]
+exclude_also =
+    def __repr__
+    def __eq__
+    def __hash__
+    def __gt__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    class .*\bProtocol\):
+    @(abc\.)?abstractmethod

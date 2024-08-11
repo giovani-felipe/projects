@@ -69,5 +69,15 @@ def allocate(line: OrderLine, batches: List[Batch]):
         raise OutOfStock(f"Out of stock for sku {line.sku}")
 
 
+def deallocate(line: OrderLine, batches: List[Batch]):
+    batch = next(b for b in sorted(batches))
+    batch.deallocate(line)
+    return batch.reference
+
+
 class OutOfStock(Exception):
+    pass
+
+
+class SkuNotFound(Exception):
     pass

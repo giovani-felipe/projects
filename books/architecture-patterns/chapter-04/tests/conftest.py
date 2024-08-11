@@ -11,6 +11,7 @@ from sqlalchemy.orm import sessionmaker, clear_mappers
 
 import config
 from adapters.orm import mapper_registry, start_mappers
+from entrypoints.flask_app import create_app
 
 
 @pytest.fixture
@@ -21,7 +22,8 @@ def in_memory_db():
 
 
 @pytest.fixture
-def session(in_memory_db):
+def session(in_memory_db, monkeypatch):
+    monkeypatch.setenv("TEST", "True")
     start_mappers()
     session = sessionmaker(bind=in_memory_db)
     yield session()
@@ -107,3 +109,22 @@ def restart_api():
     (Path(__file__).parent.parent / "entrypoints" / "flask_app.py").touch()
     time.sleep(0.5)
     wait_for_webapp_to_come_up()
+
+
+@pytest.fixture
+def app():
+    app = create_app({
+        'TESTING': True
+    })
+
+    return app
+
+
+@pytest.fixture
+def client(app):
+    return app.test_client()
+
+
+@pytest.fixture
+def runner(app):
+    return app.test_cli_runner()

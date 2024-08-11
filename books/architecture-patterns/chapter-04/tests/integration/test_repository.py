@@ -1,25 +1,8 @@
-from typing import List
-
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from adapters.repository import SqlAlchemyRepository
 from domain.model import Batch, OrderLine
-from adapters.repository import SqlAlchemyRepository, AbstractRepository
-
-
-class FakeRepository(AbstractRepository):
-
-    def __init__(self, batches: List[Batch]):
-        self._batches = set(batches)
-
-    def add(self, batch: Batch):
-        self._batches.add(batch)
-
-    def get(self, reference) -> Batch:
-        return next(b for b in self._batches if b.reference == reference)
-
-    def list(self):
-        return list(self._batches)
 
 
 def test_repository_can_save_a_batch(session: Session):
@@ -29,9 +12,13 @@ def test_repository_can_save_a_batch(session: Session):
     repo.add(batch)
     session.commit()
 
-    rows = list(session.execute(text('SELECT reference, sku, purchased_quantity, eta FROM "batches"')))
+    rows = repo.list()
+    expected = rows[0]
 
-    assert rows == [("batch1", "RUSTY-SOAPDISH", 100, None)]
+    assert expected.reference == "batch1"
+    assert expected.sku == "RUSTY-SOAPDISH"
+    assert expected.available_quantity == 100
+    assert expected.eta == None
 
 
 def insert_order_line(session: Session):
@@ -69,4 +56,3 @@ def test_repository_can_retrive_a_batch_with_allocations(session: Session):
     assert retrieved.sku == expected.sku
     assert retrieved._purchased_quantity == expected._purchased_quantity
     assert retrieved._allocations == {OrderLine("order1", "GENERIC-SOFA", 12)}
-
