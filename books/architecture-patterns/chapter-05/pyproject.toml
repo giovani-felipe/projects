@@ -1,0 +1,6 @@
+[tool.pytest.ini_options]
+addopts = "--cov-config=.coveragerc --cov=. --cov-report html"
+markers = [
+    "e2e"
+]
+
