@@ -28,6 +28,9 @@ integration-tests:
 e2e-tests: up
 	pytest --rootdir ./tests ./tests/e2e
 
+all-tests: up
+	pytest --rootdir ./tests ./tests
+
 logs:
 	docker-compose logs app | tail -100
 

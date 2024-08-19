@@ -59,6 +59,12 @@ class Batch:
             return True
         return self.eta > other.eta
 
+    def change_purchased_quantity(self, new_qty: int):
+        self._purchased_quantity = new_qty
+
+    def deallocate_one(self):
+        self._allocations.pop()
+
 
 def allocate(line: OrderLine, batches: List[Batch]):
     try:

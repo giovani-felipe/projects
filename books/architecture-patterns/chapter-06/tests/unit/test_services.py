@@ -1,10 +1,12 @@
 from datetime import date, timedelta
+from typing import Optional
 
 import pytest
 
 from src.allocation.adapters.repository import AbstractRepository
 from src.allocation.domain.model import Batch
 from src.allocation.service_layer import services
+from src.allocation.service_layer.unit_of_work import AbstractUnitOfWork
 
 today = date.today()
 tomorrow = today + timedelta(days=1)
@@ -25,8 +27,14 @@ class FakeRepository(AbstractRepository):
     def add(self, ref, sku, qty, eta=None):
         self._baches.add(Batch(ref, sku, qty, eta))
 
-    def get(self, reference) -> Batch:
-        return next(batch for batch in self._baches if batch.reference == reference)
+    def get(self, reference=None, sku=None) -> Optional[Batch]:
+        try:
+            if reference is not None:
+                return next(batch for batch in self._baches if batch.reference == reference)
+            elif sku is not None:
+                return next(batch for batch in self._baches if batch.sku == sku)
+        except StopIteration:
+            return None
 
     def list(self):
         return list(self._baches)
@@ -36,64 +44,126 @@ class FakeRepository(AbstractRepository):
         return FakeRepository([Batch(ref, sku, qty, eta)])
 
 
-def test_returns_allocation():
-    repo = FakeRepository.for_batch("batch1", "COMPLICATED-LAMP", 10, eta=None)
+class FakeUnitOfWork(AbstractUnitOfWork):
+    def __init__(self):
+        self.batches = FakeRepository([])
 
-    result = services.allocate("o1", "COMPLICATED-LAMP", 10, repo, FakeSession())
+    def commit(self):
+        self.commited = True
+
+    def rollback(self):
+        pass
+
+
+def test_returns_allocation():
+    uow = FakeUnitOfWork()
+    uow.batches.add("batch1", "COMPLICATED-LAMP", 10, eta=None)
+
+    result = services.allocate("o1", "COMPLICATED-LAMP", 10, uow)
 
     assert result == "batch1"
 
 
 def test_error_for_invalid_sku():
-    repo = FakeRepository.for_batch("batch1", "AREALSKU", 100, eta=None)
+    uow = FakeUnitOfWork()
+    uow.batches.add("batch1", "AREALSKU", 100, eta=None)
 
     with pytest.raises(services.InvalidSku, match="Invalid sku NONEXISTENTSKU"):
-        services.allocate("order1", "NONEXISTENTSKU", 10, repo, FakeSession())
+        services.allocate("order1", "NONEXISTENTSKU", 10, uow)
 
 
 def test_commits():
-    repo = FakeRepository.for_batch("batch1", "OMINOUS-MIRROR", 100, eta=None)
-    session = FakeSession()
+    uow = FakeUnitOfWork()
+    with uow:
+        uow.batches.add("batch1", "OMINOUS-MIRROR", 100, eta=None)
 
-    services.allocate("order1", "OMINOUS-MIRROR", 10, repo, session)
-    assert session.commited is True
+    services.allocate("order1", "OMINOUS-MIRROR", 10, uow)
+    assert uow.commited is True
 
 
 def test_prefers_warehouse_batches_to_shipments():
     ref_in_stock_batch = "in-stock-batch"
     ref_shipment_batch = "shipment-batch"
-    repo = FakeRepository.for_batch(ref_in_stock_batch, "RETRO-CLOCK", 100, eta=None)
-    repo.add(ref_shipment_batch, "RETRO-CLOCK", 100, eta=tomorrow)
-    session = FakeSession()
+    uow = FakeUnitOfWork()
+    uow.batches.add(ref_in_stock_batch, "RETRO-CLOCK", 100, eta=None)
+    uow.batches.add(ref_shipment_batch, "RETRO-CLOCK", 100, eta=tomorrow)
 
-    services.allocate("oref", "RETRO-CLOCK", 10, repo, session)
+    services.allocate("oref", "RETRO-CLOCK", 10, uow)
 
-    in_stock_batch = repo.get(ref_in_stock_batch)
-    shipment_batch = repo.get(ref_shipment_batch)
+    in_stock_batch = uow.batches.get(ref_in_stock_batch)
+    shipment_batch = uow.batches.get(ref_shipment_batch)
 
     assert in_stock_batch.available_quantity == 90
     assert shipment_batch.available_quantity == 100
 
 
-def test_add_batch():
-    repo, session = FakeRepository([]), FakeSession()
-    services.add_batch("batch1", "CRUNCHY-ARMCHAIR", 100, None, repo, session)
+def test_add_batch_using():
+    uow = FakeUnitOfWork()
+    services.add_batch("batch1", "CRUNCHY-ARMCHAIR", 100, None, uow)
 
-    assert repo.get("batch1") is not None
-    assert session.commited
+    assert uow.batches.get(reference="batch1") is not None
+    assert uow.commited
 
 
-def test_allocate_returns_allocation():
-    repo, session = FakeRepository([]), FakeSession()
-    services.add_batch("batch1", "COMPLICATED-LAMP", 100, None, repo, session)
-    result = services.allocate("order1", "COMPLICATED-LAMP", 10, repo, session)
+def test_allocate_returns_allocation_using():
+    uow = FakeUnitOfWork()
+    services.add_batch("batch1", "COMPLICATED-LAMP", 100, None, uow)
+    result = services.allocate("order1", "COMPLICATED-LAMP", 10, uow)
 
     assert result == "batch1"
 
 
 def test_allocate_errors_for_invalid_sku():
-    repo, session = FakeRepository([]), FakeSession()
-    services.add_batch("batch1", "AREALSKU", 100, None, repo, session)
+    uow = FakeUnitOfWork()
+    services.add_batch("batch1", "AREALSKU", 100, None, uow)
 
     with pytest.raises(services.InvalidSku, match="Invalid sku NONEXISTENTSKU"):
-        services.allocate("order1", "NONEXISTENTSKU", 10, repo, session)
+        services.allocate("order1", "NONEXISTENTSKU", 10, uow)
+
+
+def test_reallocate():
+    uow = FakeUnitOfWork()
+    services.add_batch("batch1", "COMPLICATED-LAMP", 100, None, uow)
+    batchref = services.allocate("order1", "COMPLICATED-LAMP", 10, uow)
+
+    batch = uow.batches.get(reference=batchref)
+
+    assert batch.reference == "batch1"
+    assert batch.sku == "COMPLICATED-LAMP"
+    assert batch.available_quantity == 90
+
+    services.reallocate("order1", "COMPLICATED-LAMP", 10, uow)
+
+    batch = uow.batches.get(reference=batchref)
+
+    assert batch.reference == "batch1"
+    assert batch.sku == "COMPLICATED-LAMP"
+    assert batch.available_quantity == 90
+
+
+def test_reallocate_errors():
+    uow = FakeUnitOfWork()
+    services.add_batch("batch1", "COMPLICATED-LAMP", 100, None, uow)
+    batchref = services.allocate("order1", "COMPLICATED-LAMP", 10, uow)
+
+    batch = uow.batches.get(reference=batchref)
+
+    assert batch.reference == "batch1"
+    assert batch.sku == "COMPLICATED-LAMP"
+    assert batch.available_quantity == 90
+
+    with pytest.raises(services.InvalidSku, match="Invalid sku NONEXISTENTSKU"):
+        services.reallocate("order1", "NONEXISTENTSKU", 10, uow)
+
+def test_change_batch_quantity():
+    uow = FakeUnitOfWork()
+    services.add_batch("batch1", "COMPLICATED-LAMP", 10, None, uow)
+    services.allocate("order1", "COMPLICATED-LAMP", 10, uow)
+
+    services.change_batch_quantity("batch1", 5, uow)
+
+    batch = uow.batches.get(reference="batch1")
+
+    assert batch.reference == "batch1"
+    assert batch.sku == "COMPLICATED-LAMP"
+    assert batch.available_quantity == 5

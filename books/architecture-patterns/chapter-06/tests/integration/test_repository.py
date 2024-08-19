@@ -6,7 +6,6 @@ from src.allocation.domain.model import Batch, OrderLine
 
 
 def test_repository_can_save_a_batch(session: Session):
-
     repo = SqlAlchemyRepository(session)
     repo.add("batch1", "RUSTY-SOAPDISH", 100, eta=None)
     session.commit()
@@ -48,7 +47,7 @@ def test_repository_can_retrive_a_batch_with_allocations(session: Session):
     insert_allocation(session, orderline_id, batch1_id)
 
     repo = SqlAlchemyRepository(session)
-    retrieved = repo.get("batch1")
+    retrieved = repo.get(reference="batch1")
 
     expected = Batch("batch1", "GENERIC-SOFA", 100, eta=None)
     assert retrieved == expected

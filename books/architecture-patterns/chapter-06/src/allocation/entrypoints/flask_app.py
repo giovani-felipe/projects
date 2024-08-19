@@ -5,9 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from src.allocation import config
-from src.allocation.adapters import orm, repository
+from src.allocation.adapters import orm
 from src.allocation.domain import model
 from src.allocation.service_layer import services
+from src.allocation.service_layer.unit_of_work import SqlAlchemyUnitOfWork
 
 get_session = sessionmaker(bind=create_engine(config.get_postgres_uri()))
 
@@ -20,27 +21,24 @@ def create_app(test_config=None):
 
     @app.route("/allocate", methods=["POST"])
     def allocate_endpoint():
-        session = get_session()
-        repo = repository.SqlAlchemyRepository(session)
+        uow = SqlAlchemyUnitOfWork()
 
         try:
-            batchref = services.allocate(request.json['orderid'], request.json['sku'], request.json['qty'], repo, session)
+            batchref = services.allocate(request.json['orderid'], request.json['sku'], request.json['qty'], uow)
         except (model.OutOfStock, services.InvalidSku) as err:
             return jsonify({'message': str(err)}), 400
 
-        session.commit()
         return jsonify({'batchref': batchref}), 201
 
     @app.route("/batches", methods=["POST"])
     def add_batch():
-        session = get_session()
-        repo = repository.SqlAlchemyRepository(session)
+        uow = SqlAlchemyUnitOfWork()
 
         eta = request.json['eta']
         if eta is not None:
             eta = datetime.fromisoformat(eta).date()
 
-        services.add_batch(request.json['ref'], request.json['sku'], request.json['qty'], eta, repo, session)
+        services.add_batch(request.json['ref'], request.json['sku'], request.json['qty'], eta, uow)
 
         return 'OK', 201
 

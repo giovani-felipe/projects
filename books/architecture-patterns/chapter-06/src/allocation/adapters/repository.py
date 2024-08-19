@@ -15,7 +15,7 @@ class AbstractRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, reference) -> Batch:
+    def get(self, reference=None, sku=None) -> Batch:
         raise NotImplementedError
 
 
@@ -27,8 +27,13 @@ class SqlAlchemyRepository(AbstractRepository):
         batch = Batch(ref, sku, qty, eta)
         self.session.add(batch)
 
-    def get(self, reference) -> Batch:
-        return self.session.query(Batch).filter_by(reference=reference).one()
+    def get(self, reference=None, sku=None) -> Batch:
+        if reference is not None:
+            return self.session.query(Batch).filter_by(reference=reference).one()
+        elif sku is not None:
+            return self.session.query(Batch).filter_by(sku=sku).one()
+
+        return None
 
     def list(self) -> List[Batch]:
         return self.session.query(Batch).all()
