@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "chapter-09"
+version = "0.1.0"
+description = ""
+authors = ["Giovani Santos <giovani_santos@outlook.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.3"
+psycopg2-binary = "^2.9.9"
+requests = "^2.32.3"
+sqlalchemy = "^2.0.34"
+
+
+[tool.poetry.group.test.dependencies]
+coverage = "^7.6.1"
+pytest = "^8.3.2"
+pytest-cov = "^5.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+setuptools = "^74.1.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
