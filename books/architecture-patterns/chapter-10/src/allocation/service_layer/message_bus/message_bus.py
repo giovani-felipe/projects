@@ -1,6 +1,7 @@
 from typing import Dict, Type, Callable, List
 
 from src.allocation.adapters import email
+from src.allocation.domain.command import Command
 from src.allocation.domain.events import Event, BatchCreated, BatchQuantityChanged, AllocationRequired, OutOfStock
 from src.allocation.service_layer.handlers import add_batch, change_batch_quantity, allocate
 from src.allocation.service_layer.message_bus.abstract_message_bus import AbstractMessageBus
@@ -12,9 +13,12 @@ def send_out_of_stock_notification(event: OutOfStock, uow: AbstractUnitOfWork):
 
 
 class MessageBus(AbstractMessageBus):
-    HANDLERS: Dict[Type[Event], List[Callable]] = {
+    EVENT_HANDLERS: Dict[Type[Event], List[Callable]] = {
+        OutOfStock: [send_out_of_stock_notification]
+    }
+
+    COMMAND_HANDLERS: Dict[Type[Command], List[Callable]] = {
         BatchCreated: [add_batch],
         BatchQuantityChanged: [change_batch_quantity],
         AllocationRequired: [allocate],
-        OutOfStock: [send_out_of_stock_notification]
     }

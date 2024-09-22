@@ -18,11 +18,9 @@ test: up
 
 unit-tests:
 	pytest --rootdir ./tests ./tests/unit
-# docker-compose run --rm --no-deps --entrypoint=pytest app /tests/unit
 
 integration-tests:
 	pytest --rootdir ./tests ./tests/integration
-	#docker-compose run --rm --no-deps --entrypoint=pytest app /tests/integration
 
 e2e-tests: up
 	pytest --rootdir ./tests ./tests/e2e

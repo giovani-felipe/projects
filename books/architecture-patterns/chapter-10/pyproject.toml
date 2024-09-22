@@ -10,6 +10,7 @@ flask = "^3.0.3"
 psycopg2-binary = "^2.9.9"
 requests = "^2.32.3"
 sqlalchemy = "^2.0.34"
+tenacity = "^9.0.0"
 
 
 [tool.poetry.group.test.dependencies]
