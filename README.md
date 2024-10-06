@@ -1,2 +1,2 @@
-# python
-Studies, projects, training and POCs using Python
+# Projects
+Studies, projects, training and POCs.
