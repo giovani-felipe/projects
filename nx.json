@@ -1,0 +1,35 @@
+{
+  "installation": {
+    "version": "20.0.0",
+    "plugins": {
+      "@nx/gradle": "20.0.0",
+      "@jnxplus/nx-maven": "1.12.2"
+    }
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/gradle",
+      "options": {
+        "testTargetName": "test",
+        "classesTargetName": "classes",
+        "buildTargetName": "build"
+      }
+    },
+    {
+      "plugin": "@jnxplus/nx-maven",
+      "options": {
+        "localRepoRelativePath": ".m2/repository"
+      }
+    },
+    {
+      "plugin": "@jnxplus/nx-maven",
+      "options": {
+        "localRepoRelativePath": ".m2/repository"
+      }
+    }
+  ],
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "production": ["default", "!{projectRoot}/src/test/**/*"]
+  }
+}
