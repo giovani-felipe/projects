@@ -1,0 +1,47 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ConfigurationPage > should be rendered correctly 1`] = `
+<div>
+  <div
+    class="card"
+  >
+    <section>
+      <h2>
+        Let's go started!
+      </h2>
+      <form>
+        <div
+          class="group-input-btn"
+        >
+          <input
+            placeholder="Insert the participants' names"
+            type="text"
+            value=""
+          />
+          <button
+            disabled=""
+            type="submit"
+          >
+            Add
+          </button>
+        </div>
+      </form>
+      <ul />
+      <footer
+        class="footer-configurations"
+      >
+        <button
+          class="button"
+          disabled=""
+        >
+          Start joking
+        </button>
+        <img
+          alt="Shopping bags"
+          src="/assets/images/bags.png"
+        />
+      </footer>
+    </section>
+  </div>
+</div>
+`;

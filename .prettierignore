@@ -1,7 +1,5 @@
-# Maven target
-target/
-.m2/repository
-
-# Maven target
-target/
-.m2/repository
+# Add files here to ignore them from prettier formatting
+/dist
+/coverage
+/.nx/cache
+/.nx/workspace-data
