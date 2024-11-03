@@ -1,8 +1,8 @@
 import { FormEvent, useRef, useState } from 'react';
-import { useParticipantAdd } from '../../states/hooks/useParticipantAdd';
-import useErrorMessage from '../../states/hooks/useErrorMessage';
+import { useParticipantAdd } from '../../state/hooks/useParticipantAdd';
+import useErrorMessage from '../../state/hooks/useErrorMessage';
 
-import './style.scss';
+import './style.css';
 
 const FormComponent = () => {
   const [name, setName] = useState('');

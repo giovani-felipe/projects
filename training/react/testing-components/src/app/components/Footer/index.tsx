@@ -1,12 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { useParticipantList } from '../../states/hooks/useParticipantList';
-import './style.scss';
+import { useParticipantList } from '../../state/hooks/useParticipantList';
+import './style.css';
+import { useSweepstake } from '../../state/hooks/useSweepstake';
 
 const FooterComponent = () => {
   const participants = useParticipantList();
   const navigate = useNavigate();
+  const sweepstake = useSweepstake();
 
-  const start = () => navigate('/sweepstakes');
+  const start = () => {
+    sweepstake();
+    navigate('/sweepstakes');
+  };
 
   return (
     <footer className="footer-configurations">
@@ -17,7 +22,7 @@ const FooterComponent = () => {
       >
         Start joking
       </button>
-      <img src="/assets/images/bags.png" alt="Shopping bags" />
+      <img src="../../../assets/images/bags.png" alt="Shopping bags" />
     </footer>
   );
 };

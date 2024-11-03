@@ -2,9 +2,9 @@ import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import { RecoilRoot } from 'recoil';
 import ParticipantListComponent from '.';
-import { useParticipantList } from '../../states/hooks/useParticipantList';
+import { useParticipantList } from '../../state/hooks/useParticipantList';
 
-vi.mock('../../states/hooks/useParticipantList', () => {
+vi.mock('../../state/hooks/useParticipantList', () => {
   return { useParticipantList: vi.fn() };
 });
 

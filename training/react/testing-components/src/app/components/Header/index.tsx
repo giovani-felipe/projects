@@ -1,4 +1,3 @@
-// src/componentes/Cabecalho/index.tsx
 import './style.css';
 
 const HeaderComponent = () => {
@@ -11,7 +10,7 @@ const HeaderComponent = () => {
       ></div>
       <img
         className="participant"
-        src="/assets/imagens/participant.png"
+        src="../../../assets/images/participant.png"
         alt="Participant with gift in hand"
       />
     </header>

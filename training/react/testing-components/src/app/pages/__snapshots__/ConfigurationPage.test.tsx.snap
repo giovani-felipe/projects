@@ -38,7 +38,7 @@ exports[`ConfigurationPage > should be rendered correctly 1`] = `
         </button>
         <img
           alt="Shopping bags"
-          src="/assets/images/bags.png"
+          src="../../../assets/images/bags.png"
         />
       </footer>
     </section>

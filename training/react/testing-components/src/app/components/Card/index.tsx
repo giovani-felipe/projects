@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import './style.scss';
+import './style.css';
 
 const Card = ({ children }: { children: ReactNode }) => {
   return <div className="card">{children}</div>;

@@ -2,18 +2,26 @@ import { fireEvent, render } from '@testing-library/react';
 import { RecoilRoot } from 'recoil';
 import FooterComponent from '.';
 import '@testing-library/jest-dom';
-import { useParticipantList } from '../../states/hooks/useParticipantList';
+import { useParticipantList } from '../../state/hooks/useParticipantList';
 
-vi.mock('../../states/hooks/useParticipantList', () => {
+const useNavigateMock = vi.fn();
+const raffleOffMock = vi.fn();
+
+vi.mock('../../state/hooks/useParticipantList', () => {
   return {
     useParticipantList: vi.fn(),
   };
 });
 
-const useNavigateMock = vi.fn();
 vi.mock('react-router-dom', () => {
   return {
     useNavigate: () => useNavigateMock,
+  };
+});
+
+vi.mock('../../state/helpers/raffleOff', () => {
+  return {
+    raffleOff: () => raffleOffMock,
   };
 });
 
@@ -63,6 +71,7 @@ describe('FooterComponent', () => {
       fireEvent.click(button);
 
       expect(useNavigateMock).toHaveBeenCalledTimes(1);
+      expect(raffleOffMock).toHaveBeenCalled(1);
     });
   });
 });

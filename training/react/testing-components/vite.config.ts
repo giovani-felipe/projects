@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import { NodePackageImporter } from 'sass';
 
 export default defineConfig({
   root: __dirname,
@@ -25,6 +26,15 @@ export default defineConfig({
     coverage: {
       reportsDirectory: '../../../coverage/training/react/testing-components',
       provider: 'v8',
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler', // or "modern", "legacy"
+        importers: [new NodePackageImporter()],
+        silenceDeprecations: ['legacy-js-api'],
+      },
     },
   },
 });
