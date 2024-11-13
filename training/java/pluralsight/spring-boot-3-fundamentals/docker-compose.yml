@@ -10,3 +10,23 @@ services:
       POSTGRES_PASSWORD: pluralsight
     ports:
       - '5432:5432'
+
+  events:
+    image: events-service:0.0.1-SNAPSHOT
+    depends_on:
+      - postgres
+    environment: 
+      - "SPRING_PROFILES_ACTIVE=docker"
+    ports:
+      - '8081:8081'
+
+  registration:
+    image: registration-service:0.0.1-SNAPSHOT
+    depends_on:
+      - mongo
+    environment: 
+      - "SPRING_PROFILES_ACTIVE=docker"
+    ports:
+      - '8080:8080'
+
+  
