@@ -1,0 +1,6 @@
+### Create a new registration
+
+POST localhost:8080/registrations
+Content-Type: application/json
+
+{"productId": 801, "attendeeName": "Jesper de Jong"}

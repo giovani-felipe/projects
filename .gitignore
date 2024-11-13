@@ -51,3 +51,32 @@ __pycache__
 
 # Test
 .coverage
+
+
+# Maven
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!.mvn/wrapper/maven-wrapper.jar
+.m2/repository
+
+# Maven
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!.mvn/wrapper/maven-wrapper.jar
+.m2/repository
+
+# Maven
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!.mvn/wrapper/maven-wrapper.jar
+.m2/repository
+
+# Maven
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!.mvn/wrapper/maven-wrapper.jar
+.m2/repository

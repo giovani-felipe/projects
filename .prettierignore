@@ -3,3 +3,19 @@
 /coverage
 /.nx/cache
 /.nx/workspace-data
+
+# Maven target
+target/
+.m2/repository
+
+# Maven target
+target/
+.m2/repository
+
+# Maven target
+target/
+.m2/repository
+
+# Maven target
+target/
+.m2/repository
