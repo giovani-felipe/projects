@@ -1,13 +1,12 @@
 import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
-import { NodePackageImporter } from 'sass';
 
 export default defineConfig({
   root: __dirname,
-  cacheDir: '../../../../node_modules/.vite/training/react/alura/testing-components',
+  cacheDir:
+    '../../../../node_modules/.vite/training/react/alura/typescript-with-react',
   plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
   // Uncomment this if you are using workers.
   // worker: {
@@ -24,17 +23,16 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: {
-      reportsDirectory: '../../../../coverage/training/react/testing-components',
+      reportsDirectory:
+        '../../../../coverage/training/react/alura/typescript-with-react',
       provider: 'v8',
     },
   },
   css: {
-    preprocessorOptions: {
-      scss: {
-        api: 'modern-compiler', // or "modern", "legacy"
-        importers: [new NodePackageImporter()],
-        silenceDeprecations: ['legacy-js-api'],
-      },
+    modules: {
+      generateScopedName: '[name]__[local]__[hash:base64:5]',
+      scopeBehaviour: 'local',
+      localsConvention: 'camelCase',
     },
   },
 });

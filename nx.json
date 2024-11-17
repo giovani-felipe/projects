@@ -51,24 +51,6 @@
       "options": {
         "localRepoRelativePath": ".m2/repository"
       }
-    },
-    {
-      "plugin": "@jnxplus/nx-maven",
-      "options": {
-        "localRepoRelativePath": ".m2/repository"
-      }
-    },
-    {
-      "plugin": "@jnxplus/nx-maven",
-      "options": {
-        "localRepoRelativePath": ".m2/repository"
-      }
-    },
-    {
-      "plugin": "@jnxplus/nx-maven",
-      "options": {
-        "localRepoRelativePath": ".m2/repository"
-      }
     }
   ],
   "targetDefaults": {

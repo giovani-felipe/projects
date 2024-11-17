@@ -4,5 +4,10 @@
   "plugins": [
     "@prettier/plugin-xml",
     "prettier-plugin-java"
-  ]
+  ],
+  "singleAttributePerLine ": true,
+  "html":{
+    "singleAttributePerLine": true
+  },
+  "maxLineLength": 80
 }

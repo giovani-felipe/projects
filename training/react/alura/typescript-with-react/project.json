@@ -1,7 +1,7 @@
 {
-  "name": "testing-components",
+  "name": "alura-ts-react",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "training/react/alura/testing-components/src",
+  "sourceRoot": "training/react/alura/typescript-with-react/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -11,13 +11,14 @@
       "defaultConfiguration": "production",
       "options": {
         "target": "web",
-        "outputPath": "dist/training/react/testing-components",
-        "main": "training/react/alura/testing-components/src/main.tsx",
-        "tsConfig": "training/react/alura/testing-components/tsconfig.app.json",
-        "rspackConfig": "training/react/alura/testing-components/rspack.config.js",
+        "outputPath": "dist/training/react/alura/typescript-with-react",
+        "index": "training/react/alura/typescript-with-react/src/index.html",
+        "main": "training/react/alura/typescript-with-react/src/main.tsx",
+        "tsConfig": "training/react/alura/typescript-with-react/tsconfig.app.json",
+        "rspackConfig": "training/react/alura/typescript-with-react/rspack.config.js",
         "assets": [
-          "training/react/alura/testing-components/src/favicon.ico",
-          "training/react/alura/testing-components/src/assets"
+          "training/react/alura/typescript-with-react/src/favicon.ico",
+          "training/react/alura/typescript-with-react/src/assets"
         ]
       },
       "configurations": {
@@ -34,12 +35,12 @@
     "serve": {
       "executor": "@nx/rspack:dev-server",
       "options": {
-        "buildTarget": "testing-components:build:development"
+        "buildTarget": "alura-ts-react:build:development"
       },
       "configurations": {
         "development": {},
         "production": {
-          "buildTarget": "testing-components:build:production"
+          "buildTarget": "alura-ts-react:build:production"
         }
       }
     },
@@ -47,7 +48,7 @@
       "executor": "@nx/web:file-server",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "testing-components:build",
+        "buildTarget": "alura-ts-react:build",
         "spa": true
       }
     }
