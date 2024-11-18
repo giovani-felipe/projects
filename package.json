@@ -18,6 +18,7 @@
     "@nx/devkit": "20.1.0",
     "@nx/eslint": "20.1.0",
     "@nx/eslint-plugin": "20.1.0",
+    "@nx/gradle": "^20.1.0",
     "@nx/jest": "20.1.0",
     "@nx/js": "20.1.0",
     "@nx/playwright": "20.1.0",

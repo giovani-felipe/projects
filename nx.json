@@ -51,6 +51,14 @@
       "options": {
         "localRepoRelativePath": ".m2/repository"
       }
+    },
+    {
+      "plugin": "@nx/gradle",
+      "options": {
+        "testTargetName": "test",
+        "classesTargetName": "classes",
+        "buildTargetName": "build"
+      }
     }
   ],
   "targetDefaults": {

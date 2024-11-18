@@ -11,5 +11,6 @@
   <packaging>pom</packaging>
   <modules>
     <module>training/java/pluralsight/spring-boot-3-fundamentals</module>
+    <module>training/java/pluralsight/spring-boot-3-playbook</module>
   </modules>
 </project>
