@@ -1,5 +1,6 @@
 import Form from '../components/Form';
 import List from '../components/List';
+import Timer from '../components/Timer';
 import style from './app.module.scss';
 
 export function App() {
@@ -7,6 +8,7 @@ export function App() {
     <div className={style.App}>
       <Form />
       <List />
+      <Timer />
     </div>
   );
 }

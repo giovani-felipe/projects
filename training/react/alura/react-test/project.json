@@ -1,0 +1,7 @@
+{
+  "name": "react-test",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "training/react/alura/react-test/src",
+  "projectType": "application",
+  "tags": []
+}
