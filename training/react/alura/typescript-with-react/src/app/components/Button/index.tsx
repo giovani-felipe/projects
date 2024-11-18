@@ -3,7 +3,7 @@ import style from './Button.module.scss';
 
 class Button extends Component {
   render() {
-    return <button className={style.button}>Button</button>;
+    return <button className={style.button}>{this.props.children}</button>;
   }
 }
 

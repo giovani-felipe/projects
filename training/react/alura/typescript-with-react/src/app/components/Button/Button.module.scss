@@ -1,4 +1,4 @@
-.Button {
+.button {
   align-self: center;
   background-color: #88bcd1;
   border-radius: 10px;
@@ -16,7 +16,7 @@
 }
 
 @media screen and (min-width: 1280px) {
-  .Button {
+  .button {
     grid-column-start: span 2;
     justify-self: center;
     width: 200px;
