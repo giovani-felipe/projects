@@ -1,10 +1,20 @@
-import style from '../List.module.scss';
+import { Task } from '../../../types/task';
+import style from './Item.module.scss';
 
-export default function Item(props: { name: string; time: string }) {
+type ItemProps = {
+  task: Task;
+  selectTask: (task: Task) => void;
+};
+
+export default function Item({ task, selectTask }: ItemProps) {
   return (
-    <li className={style.item}>
-      <h3>{props.name}</h3>
-      <span>{props.time}</span>
+    <li
+      className={`${style.item} ${task.selected ? style.itemSelected : ''} ${task.completed ? style.itemCompleted : ''}`}
+      onClick={() => !task.completed && selectTask(task)}
+    >
+      <h3>{task.name}</h3>
+      <span>{task.time}</span>
+      {task.completed && <span className={style.completed}></span>}
     </li>
   );
 }

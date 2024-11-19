@@ -1,10 +1,33 @@
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 import style from './Button.module.scss';
 
-class Button extends Component {
+type ButtonProps = {
+  type?: 'button' | 'submit' | 'reset';
+  children: ReactNode;
+  onClick?: () => void;
+};
+
+function Button({ type = 'button', onClick, children }: ButtonProps) {
+  return (
+    <button type={type} className={style.button} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+class ButtonComponent extends Component<{
+  type?: 'button' | 'submit' | 'reset';
+  children: ReactNode;
+  onClick?: () => void;
+}> {
   render() {
-    return <button className={style.button}>{this.props.children}</button>;
+    const { type = 'button', onClick } = this.props;
+    return (
+      <Button type={type} onClick={onClick}>
+        {this.props.children}
+      </Button>
+    );
   }
 }
 
-export default Button;
+export default ButtonComponent;
